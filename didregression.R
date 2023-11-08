@@ -240,3 +240,23 @@ tau.hat2 = synthdid_estimate(setup$Y, setup$N0, setup$T0, X = mCT)
 print(x2 <- summary(tau.hat2))
 synthdid_plot(tau.hat2)
 y2 <- synthdid_controls(tau.hat2)
+
+#############################################3333
+#finding the estimated number of people that could've been saved if the states that never expanded medicaid expanded in 2014
+library(dplyr)
+library(readr)
+nonExpandTable <- filter(didTable, YEAR_TREATED == 0 | YEAR_TREATED >= 2018)
+nonExpandTable <- filter(nonExpandTable, YEAR >= 2014 & YEAR <= 2019)
+
+nonExpandTable$DEATHS <- nonExpandTable$HRTDISEASE * (exp(nonExpandTable$LOGPOP) / 100000) #calculate estimated deaths based on the heart disease mortality per 100000 rate, and the ln population columns
+didCoef <- parse_number(esttable(reg)[9:14,2]) #extract coefficients of did2s regression, would have to run lines 7-9 and 33-47 to get the reg object
+noMedicaid <- sum(nonExpandTable$DEATHS)
+
+#subtracts the didCoefficients from the HRTDISEASE rate of every year from 2014 to 2018
+years <- 2014:2019
+for(i in 1:6){
+nonExpandTable$HRTDISEASE[nonExpandTable$YEAR == years[i]] <- nonExpandTable$HRTDISEASE[nonExpandTable$YEAR == years[i]] + didCoef[i]
+}
+nonExpandTable$DEATHS <- nonExpandTable$HRTDISEASE * (exp(nonExpandTable$LOGPOP) / 100000) #rerun death calculation
+withMedicaid <- sum(nonExpandTable$DEATHS)
+print(noMedicaid-withMedicaid)
