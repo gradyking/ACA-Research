@@ -1,9 +1,10 @@
+synthdid: 0.985 +- 2.604. Effective N0/N0 = 94.2/95~1.0. Effective T0/T0 = 1.9/4~0.5. N1,T1 = 120,6. 
 $estimate
 [1] 0.9849063
 
 $se
          [,1]
-[1,] 1.403881
+[1,] 1.207851
 
 $controls
       estimate 1

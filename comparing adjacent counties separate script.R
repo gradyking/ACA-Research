@@ -117,7 +117,7 @@ for(path in paths){
            y = "Age-standardized Mortality Rate per 100,000") + theme(plot.title = element_text(size=8)
            ) + scale_fill_manual(values=cbPalette) + scale_colour_manual(values=cbPalette)
 
-  ggsave(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "hdmPlot", pathNoTxt, ".pdf"),  # jpg, png, eps, tex, etc.
+  ggsave(paste(sep = "", "figures/Comparing Adjacent States/", "hdmPlot", pathNoTxt, ".pdf"),  # jpg, png, eps, tex, etc.
          plot = last_plot(), # or an explicit ggplot object name,
          width = 7, height = 5,
          units = "in", # other options c("in", "cm", "mm"),
@@ -144,7 +144,7 @@ for(path in paths){
            y = "% Covered by Insurance") + theme(plot.title = element_text(size=8)
            ) + scale_fill_manual(values=cbPalette) + scale_colour_manual(values=cbPalette)
 
-  ggsave(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "insurancePlot", pathNoTxt, ".pdf"),  # jpg, png, eps, tex, etc.
+  ggsave(paste(sep = "", "figures/Comparing Adjacent States/", "insurancePlot", pathNoTxt, ".pdf"),  # jpg, png, eps, tex, etc.
          plot = last_plot(), # or an explicit ggplot object name,
          width = 7, height = 5,
          units = "in", # other options c("in", "cm", "mm"),
@@ -172,7 +172,7 @@ for(path in paths){
     labs(title = "Heart Disease Mortality Change from 2010 to 2019 by County") +
     theme(panel.background=element_blank()) + scale_fill_gradient2(low = "#005696", high = "#8E063B", mid = "lightgrey", midpoint = 0, name = "% Change in HDM", limits = c(-55, 80)) + theme(legend.position = "right")
   plot(p)
-  pdf(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "HDMMap", pathNoTxt, ".pdf"), width = 7, height = 5)
+  pdf(paste(sep = "", "figures/Comparing Adjacent States/", "HDMMap", pathNoTxt, ".pdf"), width = 7, height = 5)
   print(p)
   dev.off()
 
@@ -194,7 +194,7 @@ for(path in paths){
     theme(panel.background=element_blank()) + scale_fill_gradient2(high = "#005696", low = "#8E063B", mid = "lightgrey", midpoint = 0, name = "% Change in Insurance Coverage", limits = c(-30, 30)) + theme(legend.position = "right")
   # scale_fill_gradientn(
   #   colors=viridis(3, option = "viridis"), name = "% Change in Insurance Coverage", limits = c(-10, 30))
-  pdf(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "InsuranceMap", pathNoTxt, ".pdf"), width = 7, height = 5)
+  pdf(paste(sep = "", "figures/Comparing Adjacent States/", "InsuranceMap", pathNoTxt, ".pdf"), width = 7, height = 5)
   plot(p)
   dev.off()
   #also plot the treatment (just for being obvious)
@@ -205,29 +205,43 @@ for(path in paths){
   p <- plot_usmap(data = treatment, regions = "states", include = unique(counties$stateAbb)) +
     labs(title = "Medicaid Expansion Status by County") +
     theme(panel.background=element_blank()) + theme(legend.position = "right")
-  pdf(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "TreatmentMap", pathNoTxt, ".pdf"), width = 7, height = 5)
+  pdf(paste(sep = "", "figures/Comparing Adjacent States/", "TreatmentMap", pathNoTxt, ".pdf"), width = 7, height = 5)
   plot(p)
   print(p)
   dev.off()
-  
+
   library(synthdid)
   # #trying out a synth did to see what difference it makes
   # #https://synth-inference.github.io/synthdid/articles/synthdid.html
   combinedList[combinedList$YEAR_TREATED>2018,]$TREATED <- 0
   setup <- synthdid::panel.matrices(as.data.frame(combinedList), unit = 1, time = 2, treatment = 3, outcome = 6)
   tau.hat = synthdid_estimate(setup$Y, setup$N0, setup$T0)
-  
-  sink(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "SDIDSummary", pathNoTxt, ".txt")) #opens sink
+
+  sink(paste(sep = "", "figures/Comparing Adjacent States/", "SDIDSummary", pathNoTxt, ".txt")) #opens sink
+  print(tau.hat)
   print(summary(tau.hat))
   sink() #closes sink
   
-  pdf(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "SDIDResults", pathNoTxt, ".pdf"), width = 7, height = 5)
-  p <- synthdid_plot(tau.hat)
+  pdf(paste(sep = "", "figures/Comparing Adjacent States/", "SDIDResults2", pathNoTxt, ".pdf"), width = 5, height = 3.5)
+  p <- synthdid_plot(tau.hat) + scale_color_discrete(labels=c('Synthetic Control', 'Treated')) +
+    labs(x='Date',
+         y='Preventable Heart Disease\n Mortality Rate per 100,000') + scale_x_continuous(breaks = 2010:2020)
   plot(p)
   dev.off()
-  
-  pdf(paste(sep = "", "adjacentCountiesData/fullStateComparisons/plots/", "SDIDResultsLinedUp", pathNoTxt, ".pdf"), width = 7, height = 5)
+
+  pdf(paste(sep = "", "figures/Comparing Adjacent States/", "SDIDResultsLinedUp", pathNoTxt, ".pdf"), width = 7, height = 5)
   p <- synthdid_plot(tau.hat, overlay = 1)
   plot(p)
   dev.off()
+  
+  # issues with multicollinearity on the obesity variable in the foels within adjust.outcome.for.x, will look at later
+  # library(xsynthdid)
+  # dat <- as.data.frame(combinedList)
+  # dat$y.adj <- adjust.outcome.for.x(combinedList,unit=1,time = 2, treatment = 3, outcome = 6,x=c(8:10, 12))
+  # pm <- panel.matrices(dat, unit=1,time = 2,treatment = 3, outcome = "y.adj")
+  # sdid.adj = synthdid_estimate(Y=pm$Y,N0=pm$N0,T0 = pm$T0)
+  # sdid.adj
+  # p <- synthdid_plot(sdid.adj) + scale_color_discrete(labels=c('Synthetic Control', 'Treated')) + 
+  #   labs(x='Date',
+  #        y='Preventable Heart Disease\n Mortality Rate') + scale_x_continuous(breaks = 2010:2020)
 }
