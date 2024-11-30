@@ -38,15 +38,22 @@ statTable$year <- as.character(statTable$year)
 
 statTable <- statTable %>% filter(year != 2019)
 
-ggplot(statTable, aes(x = year, y = meanPop, group = 1)) + geom_line(linewidth = 2.4, color = "darkblue") + geom_point(
-  fill = "darkblue",
-  size = 5, 
+
+png(filename = 'figures/final paper/figure5a.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(statTable, aes(x = year, y = meanPop, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
   pch = 21, # Type of point that allows us to have both color (border) and fill.
   colour = "#FFFFFF", 
   stroke = 1 # The width of the border, i.e. stroke.
-) + labs(title = paste(sep="", "Average Population of US Counties, 2010-2018"), 
+) + labs(title = paste(sep="", "Average population of US counties, 2010-2018"), 
          x = "Year", 
-         y = "Average Population") + theme(plot.title = element_text(size=14)) + coord_cartesian(ylim = c(70000,120000))
+         y = "Average population") + theme(plot.title = element_text(size=14)) + coord_cartesian(ylim = c(70000,120000))
+
+dev.off()
+
+write_csv(statTable %>% select('year', 'meanPop'), 'figures/final paper/figure5adata.csv')
                                                                     
 ggplot(statTable, aes(x = year, y = medianPop, group = 1)) + geom_line(linewidth = 2.4, color = "lightblue") + geom_point(
   fill = "lightblue",
@@ -58,15 +65,20 @@ ggplot(statTable, aes(x = year, y = medianPop, group = 1)) + geom_line(linewidth
          x = "Year", 
          y = "Median Population") + theme(plot.title = element_text(size=14))
 
-ggplot(statTable, aes(x = year, y = meanEmploy, group = 1)) + geom_line(linewidth = 2.4, color = "darkblue") + geom_point(
-  fill = "darkblue",
-  size = 5, 
+png(filename = 'figures/final paper/figure5b.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(statTable, aes(x = year, y = meanEmploy, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
   pch = 21, # Type of point that allows us to have both color (border) and fill.
   colour = "#FFFFFF", 
   stroke = 1 # The width of the border, i.e. stroke.
-) + labs(title = paste(sep="", "Average Number of People Employed in US Counties, 2010-2018"), 
+) + labs(title = paste(sep="", "Average number of people employed in US counties, 2010-2018"), 
          x = "Year", 
-         y = "Average Number Employed") + theme(plot.title = element_text(size=14)) + coord_cartesian(ylim = c(70000,110000))
+         y = "Average number employed") + theme(plot.title = element_text(size=12)) + coord_cartesian(ylim = c(70000,110000))
+dev.off()
+
+write_csv(statTable %>% select('year', 'meanEmploy'), 'figures/final paper/figure5bdata.csv')
 
 ggplot(statTable, aes(x = year, y = medianEmploy, group = 1)) + geom_line(linewidth = 2.4, color = "lightblue") + geom_point(
   fill = "lightblue",

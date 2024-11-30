@@ -1,0 +1,110 @@
+Figure 2:
+
+png(filename = 'figures/final paper/figure2.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+
+ggplot(avgAll, aes(x = year, y = avgHrt, group=1)) + geom_line(linewidth = 1) + geom_point(
+  size = 3,
+  pch = 16, # Type of point that allows us to have both color (border) and fill.
+  colour = "black",
+  stroke = 1 # The width of the border, i.e. stroke.
+) + labs(title = paste(sep="", "Average heart disease mortality of US counties, 2006-2019"),
+         x = "Year",
+         y = "Age-standardized mortality rate per 100,000") + theme(plot.title = element_text(size=12)
+         ) + coord_cartesian(ylim = c(65,80))
+
+dev.off()
+
+Figure 3:
+
+png(filename = 'figures/final paper/figure3.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+
+ggplot(series2, aes(x = year, y = value, group = type)) + geom_line(linewidth = 1) + geom_point(
+  aes(shape = type), 
+  size = 3, 
+  colour = "black", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + scale_shape_manual(values=c(15, 16)) + labs(title = "Comparing heart disease mortality rates of Medicare expansion vs. non-expansion states, 2006-2018", 
+         x = "Year", 
+         y = "Age-standardized mortality rate per 100,000")  + theme(plot.title = element_text(size=12)
+    )
+
+dev.off()
+
+Figure 4:
+
+png(filename = 'figures/final paper/figure4.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+
+ggplot(plotSeries, aes(x = year, y = mean, group = group, linetype = group)) + geom_line(linewidth = 1) + geom_vline(xintercept=9.5, linetype='longdash', color='black', size=1) + geom_point(
+  size = 3, 
+  aes(shape = group), # Type of point that allows us to have both color (border) and fill.
+  colour = "black", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + scale_shape_manual(values=c(15, 16, 17)) + labs(title = "Average heart disease mortality of county-cohort groups, 2006-2018", 
+         x = "Year", 
+         y = "Age-standardized mortality rate per 100,000") + theme(plot.title = element_text(size=12)
+)
+
+dev.off()
+
+Figure 5a:
+
+png(filename = 'figures/final paper/figure5a.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(statTable, aes(x = year, y = meanPop, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
+  pch = 21, # Type of point that allows us to have both color (border) and fill.
+  colour = "#FFFFFF", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + labs(title = paste(sep="", "Average population of US counties, 2010-2018"), 
+         x = "Year", 
+         y = "Average population") + theme(plot.title = element_text(size=14)) + coord_cartesian(ylim = c(70000,120000))
+
+dev.off()
+
+Figure 5b:
+
+png(filename = 'figures/final paper/figure5b.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(statTable, aes(x = year, y = meanEmploy, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
+  pch = 21, # Type of point that allows us to have both color (border) and fill.
+  colour = "#FFFFFF", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + labs(title = paste(sep="", "Average number of people employed in US counties, 2010-2018"), 
+         x = "Year", 
+         y = "Average number employed") + theme(plot.title = element_text(size=12)) + coord_cartesian(ylim = c(70000,110000))
+dev.off()
+
+Figure 5c:
+
+png(filename = 'figures/final paper/figure5c.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(incomePlot, aes(x = year, y = means, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
+  pch = 21, # Type of point that allows us to have both color (border) and fill.
+  colour = "#FFFFFF", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + labs(title = paste(sep="", "Median income of all US counties, 2010-2018"), 
+         x = "Year", 
+         y = "Median income (2021 US dollars)") + theme(plot.title = element_text(size=14))
+
+dev.off()
+
+Figure 5d:
+
+png(filename = 'figures/final paper/figure5d.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(obesityLong, aes(x = year, y = obesity, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black", 
+  size = 3.5, 
+  pch = 21, # Type of point that allows us to have both color (border) and fill.
+  colour = "#FFFFFF", 
+  stroke = 1 # The width of the border, i.e. stroke.
+) + labs(title = "Obesity prevalence in the US, 2010-2018", 
+         x = "Year", 
+         y = "Nationwide obesity prevalence (%)") + theme(plot.title = element_text(size=14))
+
+dev.off()

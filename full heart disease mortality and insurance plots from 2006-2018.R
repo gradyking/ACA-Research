@@ -124,19 +124,22 @@ series2 <- data.frame()
 adoptedGroup <- pivot_longer(TableAdopted[1,], "2006":"2018", names_to="year")
 adoptedGroup$type <- "Expanded"
 notAdoptedGroup <- pivot_longer(TableNotAdopted[1,], "2006":"2018", names_to="year")
-notAdoptedGroup$type <- "Did Not Expand"
+notAdoptedGroup$type <- "Did not expand"
 series2 <- rbind(adoptedGroup, notAdoptedGroup)
+
+png(filename = 'figures/final paper/figure3.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
 
 ggplot(series2, aes(x = year, y = value, group = type)) + geom_line(linewidth = 1) + geom_point(
   aes(shape = type), 
   size = 3, 
   colour = "black", 
   stroke = 1 # The width of the border, i.e. stroke.
-) + scale_shape_manual(values=c(15, 16)) + labs(title = "Comparing Heart Disease Mortality Rates of Medicare Expansion vs. Non-Expansion States, 2006-2018", 
+) + scale_shape_manual(values=c(15, 16)) + labs(title = "Comparing heart disease mortality rates of Medicare expansion vs. non-expansion states, 2006-2018", 
          x = "Year", 
-         y = "Age-standardized Mortality Rate per 100,000")  + theme(plot.title = element_text(size=10)
-    ) + scale_fill_manual(values=cbPalette) + scale_colour_manual(values=cbPalette)
+         y = "Age-standardized mortality rate per 100,000")  + theme(plot.title = element_text(size=12)
+    )
 
-
+dev.off()
+write_csv(series2 %>% select(-'2019'), 'figures/final paper/figure3data.csv')
 ########################################################3
 #second part: heart disease and insurance by cohort

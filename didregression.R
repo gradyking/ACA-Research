@@ -59,12 +59,16 @@ reg <- did2s(table,
 #       second_stage = ~i(TREATED),
 #first_stage = ~ 0 | GEO_ID^YEAR + PERCELIGIBLE^YEAR + GEO_ID^PERCELIGIBLE + LOGPOP + LOGEMPLOY,
 
+png(filename = 'figures/final paper/figure6.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+
 fixest::coefplot(
   reg,
-  main = "Estimated Effect of Medicaid On Heart Disease Mortality",
-  xlab = "Relative Number of Years From Medicaid Expansion",
-  col = "turquoise4", lwd = 2
+  main = "Estimated effect of Medicaid on heart disease mortality",
+  xlab = "Relative number of years from Medicaid expansion",
+  col = "grey20", lwd = 2
 )
+dev.off()
+
 esttable(reg)
 # summary(reg)
 
@@ -81,8 +85,9 @@ groups <- split(percentInsured, Hmisc::cut2(percentInsured$X06, g=3)) #even size
 # groups <- split(percentInsured, cut(dig.lab = 3, percentInsured$X06, c(0,75,85,100))) #original groups
 
 # names(groups) <- c("Low Insurance (64.2-86.8%)","Medium Insurance (86.8-91.2%)","High Insurance (91.2-97.6%)")
-names(groups) <- paste(sep = "", c("Low", "Medium", "High"), " Insurance (", substr(names(groups),2,5), "-", substr(names(groups), 7, 10), "%) in 2006")
-
+names(groups) <- paste(sep = "", c("Low", "Medium", "High"), " insurance (", substr(names(groups),2,5), "-", substr(names(groups), 7, 10), "%) in 2006")
+names(groups) <- tolower(names(groups))
+nameExtensions <- c('7','8','9a')
 
 for(groupIndex in 1:length(groups)){
   groupedTable <- table %>% filter(GEO_ID %in% groups[[groupIndex]]$combinedfips)
@@ -93,13 +98,26 @@ for(groupIndex in 1:length(groups)){
                second_stage = ~i(REL_YEAR, ref= c(Inf)),
                treatment = "TREATED",
                cluster_var = "GEO_ID", verbose = TRUE)
+  
+  png(filename = paste0('figures/final paper/figure',nameExtensions[groupIndex],'.png'), units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+  
   fixest::coefplot(
     reg,
-    main = paste("Estimated Effect of Medicaid On HDM for ", names(groups)[groupIndex]),
-    xlab = "Relative Number of Years From Medicaid Expansion",
-    col = "turquoise4", lwd = 2
+    main = paste("Estimated effect of Medicaid on heart disease mortality\nfor", names(groups)[groupIndex]),
+    xlab = "Relative number of years from Medicaid expansion",
+    col = "grey20", lwd = 2
   )
+  dev.off()
 }
+png(filename = 'figures/final paper/figure9b.png', units = 'in', width = 8.5, height = 5, res=300, type = c('cairo'))
+
+fixest::coefplot(
+  reg,
+  main = paste("Estimated effect of Medicaid on heart disease mortality\nfor", names(groups)[groupIndex], "\n(modified Y-axis)"),
+  xlab = "Relative number of years from Medicaid expansion",
+  col = "grey20", lwd = 2, ylim.add = c(0.5,0)
+)
+dev.off()
 
 for(x in 1:length(groups)){
   print(names(groups)[x])

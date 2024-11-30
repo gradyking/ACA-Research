@@ -45,12 +45,18 @@ obesityLong$year <- row.names(obesityLong)
 #remove years up to 2010
 obesityLong <- obesityLong %>% filter(year >= 2010 & year < 2019)
 
-ggplot(obesityLong, aes(x = year, y = obesity, group = 1)) + geom_line(linewidth = 2.4, color = "darkblue") + geom_point(
-  fill = "darkblue", 
-  size = 5, 
+write_csv(obesityLong %>% select(year, obesity), 'figures/final paper/figure5ddata.csv')
+
+png(filename = 'figures/final paper/figure5d.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(obesityLong, aes(x = year, y = obesity, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black", 
+  size = 3.5, 
   pch = 21, # Type of point that allows us to have both color (border) and fill.
   colour = "#FFFFFF", 
   stroke = 1 # The width of the border, i.e. stroke.
-) + labs(title = "Nationwide Obesity Prevalence, 2010-2018", 
+) + labs(title = "Obesity prevalence in the US, 2010-2018", 
          x = "Year", 
-         y = "Nationwide Obesity Prevalence (%)") + theme(plot.title = element_text(size=12))
+         y = "Nationwide obesity prevalence (%)") + theme(plot.title = element_text(size=14))
+
+dev.off()

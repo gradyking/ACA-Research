@@ -35,17 +35,24 @@ write_csv(incomeFinishedTable, "./formattedData/medianIncomePerYear2010-2021.csv
 
 #making basic plot
 
+# if you get weird errors on this line, create a fresh R session and run this script again, it should work then
 incomePlot <- incomeFinishedTable %>% pivot_longer(names_to = "name", cols = X10:X21) %>% group_by(name) %>% summarize(mean(value)) %>% rename(year = name, means = "mean(value)")
 incomePlot$year <- 2010:2021
 incomePlot <- filter(incomePlot, year < 2019)
 incomePlot$year <- as.character(incomePlot$year)
 
-ggplot(incomePlot, aes(x = year, y = means, group = 1)) + geom_line(linewidth = 2.4, color = "darkblue") + geom_point(
-  fill = "darkblue",
-  size = 5, 
+write_csv(incomePlot, 'figures/final paper/figure5cdata.csv')
+
+png(filename = 'figures/final paper/figure5c.png', units = 'in', width = 5.95, height = 3.5, res=300, type = c('cairo'))
+
+ggplot(incomePlot, aes(x = year, y = means, group = 1)) + geom_line(linewidth = 1.5, color = "black") + geom_point(
+  fill = "black",
+  size = 3.5, 
   pch = 21, # Type of point that allows us to have both color (border) and fill.
   colour = "#FFFFFF", 
   stroke = 1 # The width of the border, i.e. stroke.
-) + labs(title = paste(sep="", "Median Income of All Counties, 2010-2018"), 
+) + labs(title = paste(sep="", "Median income of all US counties, 2010-2018"), 
          x = "Year", 
-         y = "Median Income (2021 US Dollars)") + theme(plot.title = element_text(size=14))
+         y = "Median income (2021 US dollars)") + theme(plot.title = element_text(size=14))
+
+dev.off()
